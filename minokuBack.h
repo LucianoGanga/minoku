@@ -2,17 +2,19 @@
 
 #define _minokuBack_h
 
-typedef struct{	int bombas;
-				int undos;
-				int cantFlags;
-				int mov;
-				}TipoDificultad;
+typedef struct {
+   int bombas;
+   int undos;
+   int cantFlags;
+   int mov;
+} TipoDificultad;
 
-typedef struct{	char x1;
-				int y1;
-				char x2;
-				int y2;
-				}TipoCoordenada;
+typedef struct {
+   char x1;
+   int y1;
+   char x2;
+   int y2;
+} TipoCoordenada;
 
 #define MAXFIL	19
 #define MAXCOL	19
@@ -26,8 +28,16 @@ typedef struct{	char x1;
 #define SI 0
 #define NO 1
 
-enum {UNDO,FLAG,UNFLAG,FLAGLINE,UNFLAGLINE,BARRER};
-enum {SIGUE,PERDIO,GANO};
+#define IMPRIME_INSTRUCCIONES 1
+#define DEBUG_MODE 1
+
+enum {
+   UNDO, FLAG, UNFLAG, FLAGLINE, UNFLAGLINE, BARRER
+};
+
+enum {
+   SIGUE, PERDIO, GANO
+};
 
 
 
@@ -38,13 +48,13 @@ enum {SIGUE,PERDIO,GANO};
 
 void seteaModo(TipoDificultad *, int, int, int);
 
-void generaTableros(char*** , char*** , int, int, int);
+void generaTableros(char***, char***, int, int, int);
 
-void sizeTablero(char*** , int , int );
+void sizeTablero(char***, int, int);
 
-void poneBombas(char ***, int , int , int );
+void poneBombas(char ***, int, int, int);
 
-int fflag(char***,int , int , char , int , int *, int*, int*);
+int fflag(char***, int, int, char, int, int *, int*, int*);
 
 int unflag(char***, int, int, char, int, int*, int*, int*);
 
@@ -79,20 +89,21 @@ void submenu(int nroMenu);
 /* Limpia la consola */
 void limpiaPantalla();
 
+/* Imprime los comandos del juego */
+void imprimeInstrucciones();
+
 /* Le pide al usuario el nivel de dificultad */
 int pideNivelDificultad(int fil, int col);
 
 /* Le pide al usuario las dimensiones de la matriz */
 void pideDimensiones(int *fil, int *col);
 
+/* Le pide al usuario que escriba un comando y devuelve el indice del mismo */
+int escaneaComando();
 
-
-
-
-
+/* Le */
 int queryCol(char***, int, int, int);
 int queryFil(char***, int, int, char);
 
-
-
+int escanear(char*** , char*** , int , int , TipoDificultad *, int *, TipoCoordenada *);
 #endif

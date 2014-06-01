@@ -426,4 +426,3 @@ escanear(char*** tablero, char*** tableroOculto, int fil, int col, TipoDificulta
 	
 	return SI;
 }
-
