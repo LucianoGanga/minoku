@@ -305,7 +305,6 @@ queryCol(char*** tableroOculto, int fil, int col, int columna) {
       return NO;
 
    printf("Respuesta de su query: ");
-
    for (i = 1; i < fil + 1; i++) {
       if ((*tableroOculto)[i][columna] == '#')
          b++;
@@ -353,10 +352,11 @@ int
 escaneaComando() {
    char *string = NULL, *aux = NULL;
    char *biblioStrings[CANTSTRINGS] = {"S", "query", "flag", "unflag", "save", "quit", "undo"};
-   int i = 0, flag = 0, c;
+   int i, flag = 0, c;
 
    printf("Ingrese comando: \n");
    while (flag == 0) {
+      i = 0;
       while (!isspace(c = getchar())) {
          if (i % BLOQUE == 0) {
             aux = realloc(string, (i + BLOQUE) * sizeof (*string));
@@ -379,7 +379,6 @@ escaneaComando() {
             flag = 1;
          }
       }
-
       i--;
 
       if (flag == 0)
@@ -392,7 +391,7 @@ int
 procesaComando(int i, char*** tablero, char*** tableroOculto, int fil, int col, TipoDificultad *modo, int *ultimaJugada, TipoCoordenada *coord) {
    int c, d;
    char *biblioStrings[CANTSTRINGS] = {"S", "query", "flag", "unflag", "save", "quit", "undo"};
-   int parametros, tipoDeQuery;
+   int parametros, tipoDeQuery, respuesta;
 
    switch (i) {
       case 0: /* comando "S" */
@@ -444,24 +443,25 @@ procesaComando(int i, char*** tablero, char*** tableroOculto, int fil, int col, 
             d = getchar();
          if ((parametros == 2) && c == ')' && d == '\n') {
             if (i == 2) {
-               if (fflag(tablero, fil, col, coord->x1, coord->y1, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
+               respuesta = fflag(tablero, fil, col, coord->x1, coord->y1, &(modo->mov), &(modo->cantFlags), ultimaJugada);
             } else {
-               if (unflag(tablero, fil, col, coord->x1, coord->y1, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
+               respuesta = unflag(tablero, fil, col, coord->x1, coord->y1, &(modo->mov), &(modo->cantFlags), ultimaJugada);
             }
          } else if ((parametros == 4) && c == ')' && d == '\n') {
             if (i == 2) {
-               if (flagline(tablero, fil, col, coord->x1, coord->y1, coord->x2, coord->y2, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
+               respuesta = flagline(tablero, fil, col, coord->x1, coord->y1, coord->x2, coord->y2, &(modo->mov), &(modo->cantFlags), ultimaJugada);
             } else {
-               if (unflagline(tablero, fil, col, coord->x1, coord->y1, coord->x2, coord->y2, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
+               respuesta = unflagline(tablero, fil, col, coord->x1, coord->y1, coord->x2, coord->y2, &(modo->mov), &(modo->cantFlags), ultimaJugada);
             }
          } else {
             printf("No se reconoce el comando\n");
             return NO;
          }
+
+         if (respuesta == NO)
+            printf("Parametros inexistentes\n");
+
+
          break;
       }
       case 4: /* comando "save" */
@@ -480,136 +480,5 @@ procesaComando(int i, char*** tablero, char*** tableroOculto, int fil, int col, 
          break;
       }
    }
-   return SI;
-}
-
-int
-escanear(char*** tablero, char*** tableroOculto, int fil, int col, TipoDificultad *modo, int *ultimaJugada, TipoCoordenada *coord) {
-   char *string = NULL, *aux = NULL;
-   int b, c, d;
-   char *biblioStrings[CANTSTRINGS] = {"S", "query", "flag", "unflag", "save", "quit", "undo"};
-   int i = 0, j = 0, flag = 0, parametros, tipoDeQuery;
-
-   printf("Ingrese comando:\n");
-
-   while (!isspace(c = getchar())) {
-      if (i % BLOQUE == 0) {
-         aux = realloc(string, (i + BLOQUE) * sizeof (*string));
-         if (aux == NULL) {
-            free(string);
-            printf("No hay memoria.\n");
-            return 0;
-         }
-         string = aux;
-      }
-      string[i] = c;
-      i++;
-   }
-
-   string = realloc(string, i * sizeof (*string));
-   string[i] = 0;
-
-   for (i = 0; i < CANTSTRINGS && flag == 0; i++) {
-      if (strcmp(string, biblioStrings[i]) == 0) { //printf("Usted puso %s\n",biblioStrings[i]);
-         flag = 1;
-      }
-   }
-
-   i--;
-
-   if (flag == 0) {
-      printf("No se reconoce el comando\n");
-      return NO;
-   }
-
-   switch (i) {
-      case 2:
-      case 3:
-      {
-         parametros = scanf("(%c,%d,%c,%d", &(coord->x1), &(coord->y1), &(coord->x2), &(coord->y2));
-         c = getchar();
-         if (c != '\n')
-            d = getchar();
-         if ((parametros == 2) && c == ')' && d == '\n') {
-            if (i == 2) {
-               if (fflag(tablero, fil, col, coord->x1, coord->y1, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
-            } else {
-               if (unflag(tablero, fil, col, coord->x1, coord->y1, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
-            }
-         } else if ((parametros == 4) && c == ')' && d == '\n') {
-            if (i == 2) {
-               if (flagline(tablero, fil, col, coord->x1, coord->y1, coord->x2, coord->y2, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
-            } else {
-               if (unflagline(tablero, fil, col, coord->x1, coord->y1, coord->x2, coord->y2, &(modo->mov), &(modo->cantFlags), ultimaJugada) == NO)
-                  printf("Parametros inexistentes\n");
-            }
-         } else {
-            printf("No se reconoce el comando\n");
-            return NO;
-         }
-         break;
-      }
-      case 0:
-      {
-         parametros = scanf("(%c,%d", &(coord->x1), &(coord->y1));
-         c = getchar();
-         if (c != '\n')
-            d = getchar();
-         if ((parametros == 2) && c == ')' && d == '\n')
-            printf("%s\n", biblioStrings[i]);
-         else {
-            printf("No se reconoce el comando\n");
-            return NO;
-         }
-         break;
-      }
-      case 1:
-      {
-         parametros = scanf("%d", &(coord->y1));
-         if (parametros != 1) {
-            c = getchar();
-            tipoDeQuery = QUERYFILA;
-         } else
-            tipoDeQuery = QUERYCOL;
-         if (tipoDeQuery == QUERYFILA && isalpha(c)) {
-            d = getchar();
-            if (d == '\n') {
-               if (queryFil(tableroOculto, fil, col, c) == NO)
-                  printf("La fila no existe en el tablero.\n");
-            } else {
-               printf("No se reconoce el comando\n");
-               return NO;
-            }
-         } else if (tipoDeQuery == QUERYCOL && (d = getchar()) == '\n') {
-            if (queryCol(tableroOculto, fil, col, coord->y1) == NO)
-               printf("La columna no existe en el tablero.\n");
-         } else {
-            printf("No se reconoce el comando\n");
-            return NO;
-         }
-         break;
-      }
-      case 4:
-      {
-         printf("%s\n", biblioStrings[i]);
-         break;
-      }
-      case 5:
-      {
-         printf("%s\n", biblioStrings[i]);
-         break;
-      }
-      case 6:
-      {
-         printf("%s\n", biblioStrings[i]);
-         break;
-      }
-   }
-
-
-
    return SI;
 }
