@@ -32,7 +32,7 @@ typedef struct {
 #define DEBUG_MODE 1
 
 enum {
-   UNDO, FLAG, UNFLAG, FLAGLINE, UNFLAGLINE, BARRER
+   UNDO, FLAG, UNFLAG, FLAGLINE, UNFLAGLINE, BARRER, HAYBOMBA
 };
 
 enum {
@@ -62,16 +62,14 @@ int flagline(char***, int, int, char, int, char, char, int*, int*, int*);
 
 int unflagline(char***, int, int, char, int, char, char, int*, int*, int*);
 
-
 void juegoCampania();
 
 void cargaJuego(char * nombreArchivo);
 
 void cierraJuego();
 
-/* Imprime el tablero */
-void imprimeTablero(char***matriz, int fil, int col);
-
+/* Evalua si las condiciones de juego estan dadas para que termine la partida */
+int estadoDeJuego(char*** , char*** , int , int , TipoDificultad *);
 
 /*************************/
 /* Funciones del FrontEnd */
@@ -89,6 +87,9 @@ void submenu(int nroMenu);
 /* Limpia la consola */
 void limpiaPantalla();
 
+/* Imprime el tablero */
+void imprimeTablero(char***matriz, int fil, int col);
+
 /* Imprime los comandos del juego */
 void imprimeInstrucciones();
 
@@ -100,6 +101,12 @@ void pideDimensiones(int *fil, int *col);
 
 /* Le pide al usuario que escriba un comando y devuelve el indice del mismo */
 int escaneaComando();
+
+/* Le pide al usuario que escriba un comando y devuelve el indice del mismo */
+int procesaComando(int, char*** , char*** , int , int , TipoDificultad *, int *, TipoCoordenada *);
+
+/* Segun el nro que ingresa por parametro, evalua el estado del juego para saber que hay que mostrar y hacer */
+int evaluaEstadoJuego(int, TipoDificultad *);
 
 /* Le */
 int queryCol(char***, int, int, int);
