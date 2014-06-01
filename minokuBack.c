@@ -232,3 +232,44 @@ unflagline(char***tablero, int fil, int col, char x11, int y1, char x22, char y2
    *ultimaJugada = UNFLAGLINE;
    return SI;
 }
+
+int
+estadoDeJuego(char*** tablero, char*** tableroOculto, int fil, int col, TipoDificultad *modo) {
+   int i, j, fin;
+
+   /* Se fija si hay un flag en cada bomba. */
+   for (fin = GANO, i = 0; i < fil + 1 && fin == GANO; i++) {
+      for (j = 0; j < col + 1 && fin == GANO; j++) {
+         if ((*tableroOculto)[i][j] == '#' && (*tablero)[i][j] != '&')
+            fin = SIGUE;
+      }
+   }
+   if (fin == GANO)
+      return fin;
+
+
+   /* Se fija si todos los casilleros sin bombas fueron barridos. */
+   for (fin = GANO, i = 0; i < fil + 1 && fin == GANO; i++) {
+      for (j = 0; j < col + 1 && fin == GANO; j++) {
+         if ((*tableroOculto)[i][j] == '.' && (*tablero)[i][j] != '-')
+            fin = SIGUE;
+      }
+   }
+   if (fin == GANO)
+      return fin;
+
+
+   /* Se fija si se quedo sin movimientos. */
+   if ((modo->mov) == 0)
+      return PERDIO;
+
+   for (i = 0; i < fil + 1; i++)
+      for (j = 0; j < col + 1; j++)
+         if ((*tablero)[i][j] == '#')
+            return modo->undos > 0 && modo->mov > 1 ? HAYBOMBA : PERDIO;
+
+   
+
+   return SIGUE;
+
+}
