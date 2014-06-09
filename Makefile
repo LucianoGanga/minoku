@@ -1,4 +1,4 @@
 all:
-	gcc -o minoku minokuFront.c minokuBack.c minokuBack.h getnum.h getnum.c -lm -g
-debug: 
-	gcc -Wall -pedantic -o minoku minokuFront.c minokuBack.c minokuBack.h getnum.h getnum.c -lm -g
+	gcc minokuFront.c minokuBack.c minokuBack.h getnum.h getnum.c -o minoku  -lm -g
+debug:
+	gcc -pedantic -Wall minokuFront.c minokuBack.c minokuBack.h getnum.h getnum.c -o minoku  -lm -g

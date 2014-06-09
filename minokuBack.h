@@ -7,6 +7,8 @@ typedef struct {
    int undos;
    int cantFlags;
    int mov;
+   int nivelDificultad;
+   int campania;
 } TipoDificultad;
 
 typedef struct {
@@ -27,12 +29,25 @@ typedef struct {
 #define QUERYCOL 1
 #define SI 0
 #define NO 1
+#define NOFLAG 2
+#define TIPO_TABLERO_VISIBLE 0
+#define TIPO_TABLERO_OCULTO 1
 
-#define IMPRIME_INSTRUCCIONES 1
+
+#define IMPRIME_INSTRUCCIONES 0
 #define DEBUG_MODE 1
 
+/* MENSAJES DE ERROR */
+#define ERROR_APERTURA_ARCHIVO -1
+#define ERROR_LECTURA_ARCHIVO -2
+#define ERROR_ESCRITURA_ARCHIVO -3
+
+
+#define VACIAR_BUFFER while (getchar() != '\n')
+
+
 enum {
-   UNDO, FLAG, UNFLAG, FLAGLINE, UNFLAGLINE, BARRER, HAYBOMBA
+   UNDO, FLAG, UNFLAG, FLAGLINE, UNFLAGLINE, BARRER, HAYBOMBA, NADA
 };
 
 enum {
@@ -40,19 +55,19 @@ enum {
 };
 
 
-
-
 /*************************/
 /* Funciones del BackEnd */
 /*************************/
 
-void seteaModo(TipoDificultad *, int, int, int);
+void seteaModo(TipoDificultad *, int, int);
 
 void generaTableros(char***, char***, int, int, int);
 
-void sizeTablero(char***, int, int);
+void sizeTablero(char***, int, int, int);
 
 void poneBombas(char ***, int, int, int);
+
+int barrer(char***, char***, int, int, char, int, int *, int *);
 
 int fflag(char***, int, int, char, int, int *, int*, int*);
 
@@ -62,55 +77,15 @@ int flagline(char***, int, int, char, int, char, char, int*, int*, int*);
 
 int unflagline(char***, int, int, char, int, char, char, int*, int*, int*);
 
-void juegoCampania();
+int cargaJuego(char * nombreArchivo, char***, char***, TipoDificultad *, int *, int *);
 
-void cargaJuego(char * nombreArchivo);
+int guardaJuego(char * nombreArchivo, char***, char***, TipoDificultad *, int, int);
 
 void cierraJuego();
 
+int undo(char***, int, int, TipoCoordenada *, int *, int *, int*, int *);
+
 /* Evalua si las condiciones de juego estan dadas para que termine la partida */
-int estadoDeJuego(char*** , char*** , int , int , TipoDificultad *);
+int estadoDeJuego(char***, char***, int, int, TipoDificultad *);
 
-/*************************/
-/* Funciones del FrontEnd */
-/*************************/
-
-/* Inicializa el juego */
-void initMinoku();
-
-/* Genera el nivel 1 del menu */
-void menu();
-
-/* Genera el nivel 2 del menu */
-void submenu(int nroMenu);
-
-/* Limpia la consola */
-void limpiaPantalla();
-
-/* Imprime el tablero */
-void imprimeTablero(char***matriz, int fil, int col);
-
-/* Imprime los comandos del juego */
-void imprimeInstrucciones();
-
-/* Le pide al usuario el nivel de dificultad */
-int pideNivelDificultad(int fil, int col);
-
-/* Le pide al usuario las dimensiones de la matriz */
-void pideDimensiones(int *fil, int *col);
-
-/* Le pide al usuario que escriba un comando y devuelve el indice del mismo */
-int escaneaComando();
-
-/* Le pide al usuario que escriba un comando y devuelve el indice del mismo */
-int procesaComando(int, char*** , char*** , int , int , TipoDificultad *, int *, TipoCoordenada *);
-
-/* Segun el nro que ingresa por parametro, evalua el estado del juego para saber que hay que mostrar y hacer */
-int evaluaEstadoJuego(int, TipoDificultad *);
-
-/* Le */
-int queryCol(char***, int, int, int);
-int queryFil(char***, int, int, char);
-
-int escanear(char*** , char*** , int , int , TipoDificultad *, int *, TipoCoordenada *);
 #endif
